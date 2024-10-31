@@ -1,19 +1,27 @@
 use clap::Parser;
-use std::{fs, path::PathBuf};
+use std::io;
+use std::{fs::File, io::BufReader, io::Read, path::PathBuf};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
+struct Cli {
     file: PathBuf,
 
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
+    #[arg(short, long, default_value_t = false)]
+    count: bool,
 }
 
-fn main() {
-    let args = Args::parse();
+fn main() -> io::Result<()> {
+    let args = Cli::parse();
+    let data = BufReader::new(File::open(&args.file)?);
 
-    let contents = fs::read_to_string(args.file).expect("Unable to read file");
+    if args.count {
+        let mut count = 0;
+        for _ in data.bytes() {
+            count += 1
+        }
+        println!("{count}");
+    }
 
-    println!("{contents}");
+    Ok(())
 }
