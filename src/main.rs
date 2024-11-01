@@ -19,10 +19,7 @@ fn main() -> io::Result<()> {
     let mut data = BufReader::new(File::open(&args.file)?);
 
     if args.count {
-        let mut count = 0;
-        for _ in data.by_ref().bytes() {
-            count += 1
-        }
+        let count = data.by_ref().bytes().count();
         println!("{count}");
     }
 
