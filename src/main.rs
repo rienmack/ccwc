@@ -12,6 +12,9 @@ struct Cli {
 
     #[arg(short, long, default_value_t = false)]
     length: bool,
+
+    #[arg(short, long, default_value_t = false)]
+    word: bool,
 }
 
 fn main() -> io::Result<()> {
@@ -25,8 +28,16 @@ fn main() -> io::Result<()> {
     }
 
     if args.length {
-        let line_count = data.lines().count();
+        let line_count = data.by_ref().lines().count();
         println!("{line_count}");
+    }
+
+    if args.word {
+        let mut word_count = 0;
+        for line in data.lines() {
+            word_count += line?.split_whitespace().count();
+        }
+        println!("{word_count}")
     }
 
     Ok(())
