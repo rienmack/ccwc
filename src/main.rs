@@ -16,7 +16,8 @@ struct Cli {
 
 fn main() -> io::Result<()> {
     let args = Cli::parse();
-    let mut data = BufReader::new(File::open(&args.file)?);
+    let file = File::open(&args.file)?;
+    let mut data = BufReader::new(file);
 
     if args.count {
         let count = data.by_ref().bytes().count();
@@ -24,7 +25,7 @@ fn main() -> io::Result<()> {
     }
 
     if args.length {
-        let line_count = data.by_ref().lines().count();
+        let line_count = data.lines().count();
         println!("{line_count}");
     }
 
