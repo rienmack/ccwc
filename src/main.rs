@@ -22,21 +22,25 @@ fn main() -> io::Result<()> {
     let file = File::open(&args.file)?;
     let mut data = BufReader::new(file);
 
+    let byte_count = data.by_ref().bytes().count();
+    let mut line_count = 0;
+    let mut word_count = 0;
+
+    for line in data.lines() {
+        let line = line?;
+        line_count += 1;
+        word_count += line.split_whitespace().count();
+    }
+
     if args.count {
-        let count = data.by_ref().bytes().count();
-        println!("{count}");
+        println!("{byte_count}");
     }
 
     if args.length {
-        let line_count = data.by_ref().lines().count();
         println!("{line_count}");
     }
 
     if args.word {
-        let mut word_count = 0;
-        for line in data.lines() {
-            word_count += line?.split_whitespace().count();
-        }
         println!("{word_count}")
     }
 
